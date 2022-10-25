@@ -1,0 +1,9 @@
+doctrine:
+    dbal:
+        # "TEST_TOKEN" is typically set by ParaTest
+        dbname: db
+        host: ddev-symfony2-db
+        port: 3306
+        user: db
+        password: db
+        driver: pdo_mysql

@@ -36,6 +36,5 @@ class UserFixtures extends Fixture
         yield ['John', 'Wayne2', 'jw2@symf4.loc', 'passw', null, ['ROLE_ADMIN']];
         yield ['John', 'Doe', 'jd@symf4.loc', 'passw', null, ['ROLE_USER']];
         yield ['Ted', 'Bundy', 'tb@symf4.loc', 'passw', null, ['ROLE_USER']];
-
     }
 }

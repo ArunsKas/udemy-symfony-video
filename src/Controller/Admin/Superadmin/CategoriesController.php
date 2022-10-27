@@ -91,4 +91,15 @@ class CategoriesController extends AbstractController {
         }
         return FALSE;
     }
+
+    public function getAllCategories(CategoryTreeAdminOptionList $categories, $editedCategory = NULL)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $categories->getCategoryList($categories->buildTree());
+        return $this->render('admin/_all_categories.html.twig', [
+            'categories' => $categories,
+            'editedCategory' => $editedCategory
+        ]);
+    }
 }

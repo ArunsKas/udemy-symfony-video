@@ -3,7 +3,7 @@
 {% block mainadmin %}
 <h2>Editing category</h2>
 
-    {{ form_start(form, {'attr': {'novalidate':'novalidate'}}) }}
+    {{ form_start(form) }}
     {{ form_widget(
         form.name,
         {
@@ -18,7 +18,7 @@
     <label for="inlineFormCustomSelect">Parent:</label>
     <select name="category[parent]" class="custom-select mr-sm-2" id="inlineFormCustomSelect">
         {{ render(
-            controller('App\\Controller\\Admin\\MainController::getAllCategories',
+            controller('App\\Controller\\Admin\\Superadmin\\CategoriesController::getAllCategories',
                 {'editedCategory':category}
             )
         ) }}

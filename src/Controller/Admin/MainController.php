@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/admin")
@@ -19,13 +20,33 @@ class MainController extends AbstractController {
     /**
      * @Route("/", name="admin_main_page")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, UserPasswordEncoderInterface $password_encoder): Response
     {
-        $form = $this->createForm(UserType::class);
+        $user = $this->getUser();
+        $form = $this->createForm(UserType::class, $user, ['user' => $user]);
         $form->handleRequest($request);
         $is_invalid = null;
         if ($form->isSubmitted() && $form->isValid()) {
-            exit('valid');
+            $entityManager = $this->getDoctrine()->getManager();
+            $user->setName($request->request->get('user')['name']);
+            $user->setLastName($request->request->get('user')['last_name']);
+            $user->setEmail($request->request->get('user')['email']);
+            $password = $password_encoder->encodePassword(
+                $user,
+                $request->request->get('user')['password']['first']
+            );
+            $user->setPassword($password);
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Your changes were saved!'
+            );
+
+            return $this->redirectToRoute('admin_main_page');
+        } elseif ($request->isMethod('post')) {
+            $is_invalid = 'is-invalid';
         }
 
         return $this->render('admin/my_profile.html.twig', [
@@ -38,26 +59,19 @@ class MainController extends AbstractController {
     /**
      * @Route("/videos", name="videos")
      */
-    public function videos(): Response
+    public function videos(CategoryTreeAdminOptionList $categories): Response
     {
         if ($this->isGranted('ROLE_ADMIN')) {
-            $videos = $this->getDoctrine()->getRepository(Video::class)->findAll();
+            $categories->getCategoryList($categories->buildTree());
+            $videos = $this->getDoctrine()->getRepository(Video::class)->findBy([], ['title' => 'ASC']);
         } else {
+            $categories = null;
             $videos = $this->getUser()->getLikedVideos();
         }
+
         return $this->render('admin/videos.html.twig', [
-            'videos' => $videos
-        ]);
-    }
-
-    public function getAllCategories(CategoryTreeAdminOptionList $categories, $editedCategory = NULL)
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        $categories->getCategoryList($categories->buildTree());
-        return $this->render('admin/_all_categories.html.twig', [
-            'categories' => $categories,
-            'editedCategory' => $editedCategory
+            'videos' => $videos,
+            'categories' => $categories
         ]);
     }
 

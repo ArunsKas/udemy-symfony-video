@@ -32,7 +32,7 @@ class UserFixtures extends Fixture
 
     public function getUserData(): \Generator
     {
-        yield ['John', 'Wayne', 'jw@symf4.loc', 'passw', 'hjd8dehdh', ['ROLE_ADMIN']];
+        yield ['John', 'Wayne', 'jw@symf4.loc', 'passw', '1a1732686c73381882f2f55e199f4cf9', ['ROLE_ADMIN']];
         yield ['John', 'Wayne2', 'jw2@symf4.loc', 'passw', null, ['ROLE_ADMIN']];
         yield ['John', 'Doe', 'jd@symf4.loc', 'passw', null, ['ROLE_USER']];
         yield ['Ted', 'Bundy', 'tb@symf4.loc', 'passw', null, ['ROLE_USER']];

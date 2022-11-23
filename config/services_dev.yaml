@@ -2,4 +2,4 @@ imports:
   - { resource: services.yaml }
 
 services:
-    App\Utils\Interfaces\UploadInterface: '@App\Utils\LocalUploader'
+    App\Utils\Interfaces\UploaderInterface: '@App\Utils\LocalUploader'
